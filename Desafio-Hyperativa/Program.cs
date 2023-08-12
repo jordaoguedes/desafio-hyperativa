@@ -1,9 +1,8 @@
-using DesafioHyperativa.Context;
-using DesafioHyperativa.CrossCutting;
-using DesafioHyperativa.CrossCutting.Contract;
-using DesafioHyperativa.Entities;
-using DesafioHyperativa.Repositories;
-using DesafioHyperativa.Repositories.Contracts;
+using DesafioHyperativa.Repository;
+using DesafioHyperativa.Repository.Context;
+using DesafioHyperativa.Repository.Contracts;
+using DesafioHyperativa.Repository.CrossCutting;
+using DesafioHyperativa.Repository.CrossCutting.Contract;
 using DesafioHyperativa.Service;
 using DesafioHyperativa.Service.Contract;
 using DesafioHyperativa.Service.Contract.Base;
@@ -13,8 +12,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,9 +65,9 @@ builder.Services.AddDbContext<ContextDb>(config =>
     config.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
     opt => opt.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(5), errorCodesToAdd: null)
     );
-    #if DEBUG
+#if DEBUG
     config.EnableSensitiveDataLogging(true);
-    #endif
+#endif
 });
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
@@ -79,6 +76,7 @@ builder.Services.AddScoped<ICartaoLoteService, CartaoLoteService>();
 builder.Services.AddScoped<ILoteStatusRepository, LoteStatusRepository>();
 builder.Services.AddScoped<ILoteStatusService, LoteStatusService>();
 builder.Services.AddScoped<ICartaoRepository, CartaoRepository>();
+builder.Services.AddScoped<ICartaoService, CartaoService>();
 
 var app = builder.Build();
 

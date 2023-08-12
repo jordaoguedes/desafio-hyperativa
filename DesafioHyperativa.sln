@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioHyperativa", "Desafio-Hyperativa\DesafioHyperativa.csproj", "{DE2B724A-593B-4898-95C0-3BF2D4EE8962}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesafioHyperativa.Api", "Desafio-Hyperativa\DesafioHyperativa.Api.csproj", "{DE2B724A-593B-4898-95C0-3BF2D4EE8962}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioHyperativa.Tests", "DesafioHyperativa.Tests\DesafioHyperativa.Tests.csproj", "{44D046E5-A4C7-4D25-AAE9-45921F61488E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioHyperativa.Repository", "DesafioHyperativa.Repository\DesafioHyperativa.Repository.csproj", "{D922C21B-6F87-4309-842B-0185D3F69466}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioHyperativa.Service", "DesafioHyperativa.Service\DesafioHyperativa.Service.csproj", "{3A1FD21B-BEBA-4FFB-B49B-4772FD60F445}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesafioHyperativa.Entities", "DesafioHyperativa.Entities\DesafioHyperativa.Entities.csproj", "{0BDEC9B9-A4FE-4211-82E2-4A3F5563A285}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{DE2B724A-593B-4898-95C0-3BF2D4EE8962}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE2B724A-593B-4898-95C0-3BF2D4EE8962}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE2B724A-593B-4898-95C0-3BF2D4EE8962}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44D046E5-A4C7-4D25-AAE9-45921F61488E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44D046E5-A4C7-4D25-AAE9-45921F61488E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44D046E5-A4C7-4D25-AAE9-45921F61488E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44D046E5-A4C7-4D25-AAE9-45921F61488E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D922C21B-6F87-4309-842B-0185D3F69466}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D922C21B-6F87-4309-842B-0185D3F69466}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D922C21B-6F87-4309-842B-0185D3F69466}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D922C21B-6F87-4309-842B-0185D3F69466}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A1FD21B-BEBA-4FFB-B49B-4772FD60F445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A1FD21B-BEBA-4FFB-B49B-4772FD60F445}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A1FD21B-BEBA-4FFB-B49B-4772FD60F445}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A1FD21B-BEBA-4FFB-B49B-4772FD60F445}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BDEC9B9-A4FE-4211-82E2-4A3F5563A285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BDEC9B9-A4FE-4211-82E2-4A3F5563A285}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BDEC9B9-A4FE-4211-82E2-4A3F5563A285}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BDEC9B9-A4FE-4211-82E2-4A3F5563A285}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
