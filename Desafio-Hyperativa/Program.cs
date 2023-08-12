@@ -1,9 +1,84 @@
+using DesafioHyperativa.Context;
+using DesafioHyperativa.CrossCutting;
+using DesafioHyperativa.CrossCutting.Contract;
+using DesafioHyperativa.Entities;
+using DesafioHyperativa.Repositories;
+using DesafioHyperativa.Repositories.Contracts;
+using DesafioHyperativa.Service;
+using DesafioHyperativa.Service.Contract;
+using DesafioHyperativa.Service.Contract.Base;
+using DesafioHyperativa.Service.Contract.Base.Contracts;
+using DesafioHyperativa.Util;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "bearer", // must be lower case
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
+        }
+    };
+
+    c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {securityScheme, new string[] { }}
+    });
+});
+builder.Services.AddMemoryCache();
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(config =>
+{
+    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(config =>
+{
+    config.RequireHttpsMetadata = false;
+    config.SaveToken = true;
+    config.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(TokenGenerator.secret)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+builder.Services.AddDbContext<ContextDb>(config =>
+{
+    config.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
+    opt => opt.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(5), errorCodesToAdd: null)
+    );
+    #if DEBUG
+    config.EnableSensitiveDataLogging(true);
+    #endif
+});
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ICartaoLoteService, CartaoLoteService>();
+builder.Services.AddScoped<ILoteStatusRepository, LoteStatusRepository>();
+builder.Services.AddScoped<ILoteStatusService, LoteStatusService>();
+builder.Services.AddScoped<ICartaoRepository, CartaoRepository>();
 
 var app = builder.Build();
 
@@ -16,29 +91,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.UseAuthentication();
+app.UseRouting();
+app.UseAuthorization();
+app.UseEndpoints(endpoints =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    endpoints.MapControllers();
+});
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
