@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FakeItEasy" Version="7.4.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
@@ -23,7 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Desafio-Hyperativa\DesafioHyperativa.Api.csproj" />
+    <ProjectReference Include="..\DesafioHyperativa.Entities\DesafioHyperativa.Entities.csproj" />
+    <ProjectReference Include="..\DesafioHyperativa.Repository\DesafioHyperativa.Repository.csproj" />
+    <ProjectReference Include="..\DesafioHyperativa.Service\DesafioHyperativa.Service.csproj" />
   </ItemGroup>
 
 </Project>

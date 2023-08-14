@@ -15,6 +15,9 @@ public class AuthorizationController : ControllerBase
     {
         _logger = logger;
     }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpPost]
     public ActionResult<TokenDto> Authorize()
     {

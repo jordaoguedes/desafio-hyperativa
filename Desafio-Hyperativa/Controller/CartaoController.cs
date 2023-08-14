@@ -19,6 +19,11 @@ public class CartaoController : ControllerBase
     }
 
     [HttpPost("InserirCartao")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Lote>> InserirCartao(string cartao)
     {
         try
@@ -41,6 +46,11 @@ public class CartaoController : ControllerBase
     }
 
     [HttpPost("InserirCriptografado")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Lote>> InserirCriptografado(string cartaoCriptografado)
     {
         try
@@ -63,6 +73,11 @@ public class CartaoController : ControllerBase
     }
 
     [HttpGet("GetIdCartao")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Lote>> GetIdCartao(string numeroCartao)
     {
         try
@@ -84,6 +99,11 @@ public class CartaoController : ControllerBase
         }
     }
     [HttpGet("GetIdCartaoCripografado")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Lote>> GetIdCartaoCripografado(string numeroCartaoCripografado)
     {
         try
