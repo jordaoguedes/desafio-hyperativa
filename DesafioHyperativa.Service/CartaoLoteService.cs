@@ -13,9 +13,11 @@ namespace DesafioHyperativa.Service;
 public class CartaoLoteService : Service<CartaoLote>, ICartaoLoteService
 {
     private readonly ICartaoRepository _repositoryCartao;
-    public CartaoLoteService(IRepository<CartaoLote> repository, ICartaoRepository repositoryCartao) : base(repository)
+    private readonly ILoteRepository _repositoryLote;
+    public CartaoLoteService(IRepository<CartaoLote> repository, ICartaoRepository repositoryCartao, ILoteRepository repositoryLote) : base(repository)
     {
-        this._repositoryCartao = repositoryCartao;
+        _repositoryCartao = repositoryCartao;
+        _repositoryLote = repositoryLote;
     }
 
     #region Methods
@@ -24,7 +26,7 @@ public class CartaoLoteService : Service<CartaoLote>, ICartaoLoteService
         try
         {
             List<CartaoLote> cartaoLote = PreencherDados(file);
-
+            await ValidateCompareOldValuesInDB(cartaoLote);
             await this.SaveRangeAsync(cartaoLote);
         }
         catch (BadRequestException)
@@ -41,24 +43,44 @@ public class CartaoLoteService : Service<CartaoLote>, ICartaoLoteService
         }
     }
 
-    public async override Task ValidateRange(List<CartaoLote> lstEntities)
+    public async Task ValidateCompareOldValuesInDB(List<CartaoLote> lstEntities)
     {
-        List<string> lstCartaoOld = lstEntities.Where(x => x.Cartao != null).Select(x => x.Cartao.NumeroCartao).ToList();
-
-        var lstCartao = await _repositoryCartao.GetCartoesJaInseridos(lstCartaoOld);
-
-        if (lstCartao.Count > 0)
+        try
         {
-            foreach (var item in lstEntities)
+            if (lstEntities == null)
+                throw new Exception("Entidade a ser salva nula.");
+
+            List<string> lstCartaoOld = lstEntities.Where(x => x.Cartao != null).Select(x => x.Cartao.NumeroCartao).ToList();
+
+            var nome = lstEntities?.FirstOrDefault().Lote?.Nome;         
+            
+            if (string.IsNullOrEmpty(nome))
+                throw new BadRequestException("Nome do lote não foi informado.");
+
+            if (_repositoryLote.VerificarLoteExiste(nome))
+                throw new Exception("Lote já cadastrado.");
+
+
+            var lstCartao = await _repositoryCartao.GetCartoesJaInseridos(lstCartaoOld);
+
+            if (lstCartao.Count > 0)
             {
-                if (lstCartao.Any(x => x.NumeroCartao == item.Cartao?.NumeroCartao))
+                foreach (var item in lstEntities)
                 {
-                    item.CartaoId = lstCartao.Where(x => x.NumeroCartao == item.Cartao?.NumeroCartao).First().Id;
-                    item.Cartao = null;
+                    if (lstCartao.Any(x => x.NumeroCartao == item.Cartao?.NumeroCartao))
+                    {
+                        item.CartaoId = lstCartao.Where(x => x.NumeroCartao == item.Cartao?.NumeroCartao).First().Id;
+                        item.Cartao = null;
+                    }
                 }
             }
         }
+        catch (Exception)
+        {
+            throw;
+        }
     }
+
     #endregion
 
     #region Private Methods
@@ -187,6 +209,8 @@ public class CartaoLoteService : Service<CartaoLote>, ICartaoLoteService
 
                 if (numeroCartao.Length != 16)
                     erros.Add($"O número de cartão da linha {i + 1} deve ter 16 caracteres");
+                else if (!Extension.VerificarSomenteNumero(numeroCartao.Trim()))
+                    throw new BadRequestException($"O cartão da linha {i + 1} deve ser uma sequencia de 16 caracteres somente com numero");
 
                 Cartao cartao = new Cartao
                 {

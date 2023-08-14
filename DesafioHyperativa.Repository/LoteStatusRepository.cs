@@ -13,11 +13,6 @@ public class LoteStatusRepository : Repository<LoteStatus>, ILoteStatusRepositor
     {
     }
 
-    public async Task<IList<LoteStatus>> GetAll()
-    {
-        return await DbSet.Where(x => x.Status == StatusType.ACCEPTED).ToListAsync();
-    }
-
     public async Task<LoteStatus?> GetByGuid(string guid)
     {
         return await DbSet.Where(x => x.Guid == guid).FirstOrDefaultAsync();

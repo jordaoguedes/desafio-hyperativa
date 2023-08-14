@@ -72,10 +72,11 @@ builder.Services.AddDbContext<ContextDb>(config =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<ICartaoLoteService, CartaoLoteService>();
 builder.Services.AddScoped<ILoteStatusRepository, LoteStatusRepository>();
-builder.Services.AddScoped<ILoteStatusService, LoteStatusService>();
+builder.Services.AddScoped<ILoteRepository, LoteRepository>();
 builder.Services.AddScoped<ICartaoRepository, CartaoRepository>();
+builder.Services.AddScoped<ICartaoLoteService, CartaoLoteService>();
+builder.Services.AddScoped<ILoteStatusService, LoteStatusService>();
 builder.Services.AddScoped<ICartaoService, CartaoService>();
 
 var app = builder.Build();

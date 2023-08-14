@@ -68,7 +68,6 @@ public static class Extension
             throw new Exception("Erro ao decriptar dados");
         }
     }
-
     public static string Encrypt(string text)
     {
         using (Aes aesAlg = Aes.Create())
@@ -92,7 +91,6 @@ public static class Extension
             }
         }
     }
-
     public static string Decrypt(string encryptedText)
     {
         try
@@ -122,5 +120,16 @@ public static class Extension
         {
             throw;
         }
+    }
+    public static bool VerificarSomenteNumero(string texto)
+    {
+        foreach (char caracter in texto)
+        {
+            if (!char.IsDigit(caracter))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

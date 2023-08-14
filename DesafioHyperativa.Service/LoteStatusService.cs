@@ -14,12 +14,9 @@ public class LoteStatusService : Service<LoteStatus>, ILoteStatusService
 {
     private readonly ILoteStatusRepository _repositoryLoteStatus;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private StatusType _status;
-    private bool _hasItemEmEspera;
 
     public LoteStatusService(ILoteStatusRepository repositoryLoteStatus, IServiceScopeFactory serviceScopeFactory) : base(repositoryLoteStatus)
     {
-        _status = StatusType.WAITING;
         _repositoryLoteStatus = repositoryLoteStatus;
         _serviceScopeFactory = serviceScopeFactory;
     }
@@ -35,7 +32,7 @@ public class LoteStatusService : Service<LoteStatus>, ILoteStatusService
         };
         await this.Repository.SaveAsync(loteStatus);
 
-        await ProcessarInBackGround();
+        ProcessarInBackGround(loteStatus.Id);
 
         return loteStatus.Guid.ToString();
     }
@@ -45,74 +42,44 @@ public class LoteStatusService : Service<LoteStatus>, ILoteStatusService
         return await _repositoryLoteStatus.GetByGuid(guid);
     }
 
-    public Task<IList<LoteStatus>> GetAll()
-    {
-        return this._repositoryLoteStatus.GetAll();
-    }
-
-    private async Task ProcessarInBackGround()
+    private async Task ProcessarInBackGround(int id)
     {
         using (var scope = _serviceScopeFactory.CreateScope())
         {
             var serviceLote = scope.ServiceProvider.GetRequiredService<ICartaoLoteService>();
             var serviceLoteStatus = scope.ServiceProvider.GetRequiredService<ILoteStatusService>();
-            List<LoteStatus> lstLoteStatus = new List<LoteStatus>();
 
-            if (_status == StatusType.IN_PROGRESS)
+            var entity = await serviceLoteStatus.GetAsync(id);
+            entity.Status = StatusType.IN_PROGRESS;
+            await serviceLoteStatus.SaveAsync(entity);
+
+            try
             {
-                _hasItemEmEspera = true;
-                return;
+                await serviceLote.ProcessarSalvarArquivo(Extension.DecryptBytesToFormFile(entity.File));
+                entity.Status = StatusType.FINISHED;
+                await serviceLoteStatus.SaveAsync(entity);
             }
-
-            _status = StatusType.IN_PROGRESS;
-
-            do
+            catch (BadRequestException ex)
             {
-                var lst = await serviceLoteStatus.GetAll();
-
-                if (lst.Count() == 0)
-                {
-                    _hasItemEmEspera = false;
-                    _status = StatusType.WAITING;
-                }
-
-                foreach (var item in lst)
-                {
-                    item.Status = StatusType.IN_PROGRESS;
-                    await serviceLoteStatus.SaveAsync(item);
-
-                    try
-                    {
-                        await serviceLote.ProcessarSalvarArquivo(Extension.DecryptBytesToFormFile(item.File));
-                        item.Status = StatusType.FINISHED;
-                        await serviceLoteStatus.SaveAsync(item);
-                    }
-                    catch (BadRequestException ex)
-                    {
-                        item.Erro = ex.Message;
-                        item.Status = StatusType.ERROR;
-                        item.Erro = ex.Message;
-                        await serviceLoteStatus.SaveAsync(item);
-                    }
-                    catch (BaseException ex)
-                    {
-                        item.CodigoErro = ErroType.BASE_EXCEPTION;
-                        item.Status = StatusType.ERROR;
-                        item.Erro = ex.Message;
-                        lstLoteStatus.Add(item);
-                    }
-                    catch (Exception ex)
-                    {
-                        item.CodigoErro = ErroType.UNKNOWN;
-                        item.Status = StatusType.ERROR;
-                        item.Erro = ex.Message;
-                        lstLoteStatus.Add(item);
-                    }
-                }
+                entity.Erro = ex.Message;
+                entity.Status = StatusType.ERROR;
+                entity.Erro = ex.Message;
+                await serviceLoteStatus.SaveAsync(entity);
             }
-            while (_hasItemEmEspera);
-            if (lstLoteStatus.Count > 0)
-                await serviceLoteStatus.SaveRangeAsync(lstLoteStatus);
+            catch (BaseException ex)
+            {
+                entity.CodigoErro = ErroType.BASE_EXCEPTION;
+                entity.Status = StatusType.ERROR;
+                entity.Erro = ex.Message;
+                await serviceLoteStatus.SaveAsync(entity);
+            }
+            catch (Exception ex)
+            {
+                entity.CodigoErro = ErroType.UNKNOWN;
+                entity.Status = StatusType.ERROR;
+                entity.Erro = ex.Message;
+                await serviceLoteStatus.SaveAsync(entity);
+            }
         }
     }
 }
