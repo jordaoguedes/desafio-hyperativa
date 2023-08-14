@@ -32,7 +32,7 @@ public static class TokenGenerator
 
         return new TokenDto
         {
-            AccessToken = tokenString,
+            AccessToken = "Bearer "+tokenString,
             CreateDate = DateTime.UtcNow,
             ExpireDate = DateTime.UtcNow.AddHours(6)
         };

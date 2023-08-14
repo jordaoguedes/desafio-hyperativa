@@ -4,13 +4,16 @@ using DesafioHyperativa.Repository.Context;
 using DesafioHyperativa.Repository.Contracts;
 using DesafioHyperativa.Repository.CrossCutting.Contract;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DesafioHyperativa.Repository;
 
 public class LoteStatusRepository : Repository<LoteStatus>, ILoteStatusRepository
 {
-    public LoteStatusRepository(ContextDb context, IUnitOfWork unitOfWork) : base(context, unitOfWork)
+    private readonly ILogger<LoteStatusRepository> _logger;
+    public LoteStatusRepository(ContextDb context, IUnitOfWork unitOfWork, ILogger<LoteStatusRepository> logger) : base(context, unitOfWork)
     {
+        _logger = logger;
     }
 
     public async Task<LoteStatus?> GetByGuid(string guid)

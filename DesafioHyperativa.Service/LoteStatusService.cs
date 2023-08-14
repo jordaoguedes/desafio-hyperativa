@@ -7,6 +7,7 @@ using DesafioHyperativa.Service.Contract.Base;
 using DesafioHyperativa.Service.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DesafioHyperativa.Service;
 
@@ -14,11 +15,13 @@ public class LoteStatusService : Service<LoteStatus>, ILoteStatusService
 {
     private readonly ILoteStatusRepository _repositoryLoteStatus;
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger<LoteStatusService> _logger;
 
-    public LoteStatusService(ILoteStatusRepository repositoryLoteStatus, IServiceScopeFactory serviceScopeFactory) : base(repositoryLoteStatus)
+    public LoteStatusService(ILoteStatusRepository repositoryLoteStatus, IServiceScopeFactory serviceScopeFactory, ILogger<LoteStatusService> logger) : base(repositoryLoteStatus)
     {
         _repositoryLoteStatus = repositoryLoteStatus;
         _serviceScopeFactory = serviceScopeFactory;
+        _logger = logger;
     }
 
     public async Task<string> ProcessarArquivo(IFormFile file)

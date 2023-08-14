@@ -4,15 +4,18 @@ using DesafioHyperativa.Repository.Util;
 using DesafioHyperativa.Service.Contract;
 using DesafioHyperativa.Service.Contract.Base;
 using DesafioHyperativa.Service.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace DesafioHyperativa.Service;
 
 public class CartaoService : Service<Cartao>, ICartaoService
 {
     private readonly ICartaoRepository _repositoryCartao;
-    public CartaoService(ICartaoRepository repositoryCartao) : base(repositoryCartao)
+    private readonly ILogger<CartaoService> _logger;
+    public CartaoService(ICartaoRepository repositoryCartao, ILogger<CartaoService> logger) : base(repositoryCartao)
     {
         _repositoryCartao = repositoryCartao;
+        _logger = logger;
     }
 
     #region Methods

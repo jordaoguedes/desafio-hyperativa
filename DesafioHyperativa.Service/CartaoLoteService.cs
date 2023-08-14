@@ -5,6 +5,7 @@ using DesafioHyperativa.Service.Contract;
 using DesafioHyperativa.Service.Contract.Base;
 using DesafioHyperativa.Service.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text;
 
@@ -14,10 +15,12 @@ public class CartaoLoteService : Service<CartaoLote>, ICartaoLoteService
 {
     private readonly ICartaoRepository _repositoryCartao;
     private readonly ILoteRepository _repositoryLote;
-    public CartaoLoteService(IRepository<CartaoLote> repository, ICartaoRepository repositoryCartao, ILoteRepository repositoryLote) : base(repository)
+    private readonly ILogger<CartaoLoteService> _logger;
+    public CartaoLoteService(IRepository<CartaoLote> repository, ICartaoRepository repositoryCartao, ILoteRepository repositoryLote, ILogger<CartaoLoteService> logger) : base(repository)
     {
         _repositoryCartao = repositoryCartao;
         _repositoryLote = repositoryLote;
+        _logger = logger;
     }
 
     #region Methods

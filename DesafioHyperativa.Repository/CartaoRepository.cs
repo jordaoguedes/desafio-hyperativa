@@ -3,14 +3,17 @@ using DesafioHyperativa.Repository.Context;
 using DesafioHyperativa.Repository.Contracts;
 using DesafioHyperativa.Repository.CrossCutting.Contract;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 namespace DesafioHyperativa.Repository;
 
 public class CartaoRepository : Repository<Cartao>, ICartaoRepository
 {
-    public CartaoRepository(ContextDb context, IUnitOfWork unitOfWork) : base(context, unitOfWork)
+    private readonly ILogger<CartaoRepository> _logger;
+    public CartaoRepository(ContextDb context, IUnitOfWork unitOfWork, ILogger<CartaoRepository> logger) : base(context, unitOfWork)
     {
+        _logger = logger;
     }
 
     public async Task<Cartao?> GetCartaoByNumero(string numeroCartao)

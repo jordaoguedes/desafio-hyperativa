@@ -10,10 +10,12 @@ namespace DesafioHyperativa.Controller;
 public class CartaoController : ControllerBase
 {
     private readonly ICartaoService _serviceCartao;
+    private readonly ILogger<CartaoController> _logger;
 
-    public CartaoController(ICartaoService serviceCartao)
+    public CartaoController(ICartaoService serviceCartao, ILogger<CartaoController> logger)
     {
         _serviceCartao = serviceCartao;
+        _logger = logger;
     }
 
     [HttpPost("InserirCartao")]

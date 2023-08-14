@@ -10,11 +10,13 @@ namespace DesafioHyperativa.Controller;
 [Authorize]
 public class InserirArquivoController : ControllerBase
 {
+    private readonly ILogger<InserirArquivoController> _logger;
     private readonly ILoteStatusService _serviceLoteStatus;
 
-    public InserirArquivoController(ILoteStatusService serviceLoteStatus)
+    public InserirArquivoController(ILoteStatusService serviceLoteStatus, ILogger<InserirArquivoController> logger)
     {
         _serviceLoteStatus = serviceLoteStatus;
+        _logger = logger;
     }
 
     [HttpPost("ProcessarArquivo")]

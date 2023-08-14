@@ -7,8 +7,14 @@ namespace DesafioHyperativa.Controller;
 
 [AllowAnonymous]
 [Route("Token")]
+
 public class AuthorizationController : ControllerBase
 {
+    private readonly ILogger<AuthorizationController> _logger;
+    public AuthorizationController(ILogger<AuthorizationController> logger)
+    {
+        _logger = logger;
+    }
     [HttpPost]
     public ActionResult<TokenDto> Authorize()
     {

@@ -4,6 +4,7 @@ using DesafioHyperativa.Repository.Context;
 using DesafioHyperativa.Repository.Contracts;
 using DesafioHyperativa.Repository.CrossCutting.Contract;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DesafioHyperativa.Repository;
 
