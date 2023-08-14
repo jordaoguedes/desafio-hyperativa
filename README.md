@@ -1,6 +1,6 @@
 # Desafio Hyperativa
 
-## Ponderações pertinentes 
+## Ponderações pertinentes (DesafioHyperativa.Tests -> Pasta Txt)
 * DESAFIO-HYPERATIVA possui um padrão que não pode ser aceito no sistema
 * PadraoCerto é o padrão aceito pelo sistema.
 * O desafio envolve uma série de número de cartões onde precisa receber um id único.
